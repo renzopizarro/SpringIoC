@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans   
+    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.1.xsd
+">
+	<!-- Con esto spring debera scanear y buscar anotaciones -->
+	<context:component-scan base-package="com.empleado.annotations"></context:component-scan>
+	
+	<!-- ocupar archivo de properties -->
+    <context:property-placeholder location="classpath:datosEmpresa.properties"/>
+    
+    <!-- creacion de Bean -->
+	<bean id = "miEmpleado1" class="com.empleado.DirectorEmpleadoImpl"></bean>
+	<bean id = "miSecretaria" class="com.empleado.SecretariaEmpleadoImpl"></bean>
+	
+ 	<!-- Creacion de la dependencia --> 
+ 	<bean id = "miInforme" class="com.empleado.InformeImpl"></bean>
+ 	
+ 	<!-- Uso de la dependencia en Director -->
+	<bean id="miEmpleado2" class="com.empleado.DirectorEmpleadoImpl" 
+	init-method="metodoInicial" destroy-method="metodoFinal">
+	 <constructor-arg ref="miInforme"></constructor-arg>
+	</bean>
+	
+	<!-- Uso de la dependencia en Jefe con Contructor -->
+	<bean id="miEmpleado3" class="com.empleado.JefeEmpleadoImpl">
+	 <constructor-arg ref="miInforme"></constructor-arg>
+	</bean>
+	<!-- Uso de la dependencia en Secreatatia con setter/ seteo de valores desde el properties  -->
+	<bean id="miEmpleado4" class="com.empleado.SecretariaEmpleadoImpl">
+	 <property name="creacionInforme" ref="miInforme"></property>
+	 <property name="email" value="secretaria@mail.com"></property>
+	 <property name="nombreEmpresa" value="${nombreEmpresa}"></property>
+	</bean>
+	<!-- uso de Prototype -->
+	<bean id="miEmpleadoPrototype" class="com.empleado.SecretariaEmpleadoImpl" scope="prototype">
+	 <property name="creacionInforme" ref="miInforme"></property>
+	 <property name="email" value="secretaria@mail.com"></property>
+	 <property name="nombreEmpresa" value="${nombreEmpresa}"></property>
+	</bean>
+	
+	
+	
+
+</beans>
